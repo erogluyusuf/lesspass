@@ -1,4 +1,4 @@
-name: Core Engine CI
+name: Zero-Knowledge Vault CI
 
 on:
   push:
@@ -8,6 +8,7 @@ on:
 
 jobs:
   test-core:
+    name: Core Crypto Engine (TypeScript)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
@@ -22,5 +23,27 @@ jobs:
       - name: Install dependencies
         run: yarn install --immutable
 
-      - name: Run core crypto unit tests
-        run: yarn --cwd packages/lesspass test
+      - name: Build and test core crypto engine
+        run: |
+          yarn --cwd packages/lesspass build
+          yarn --cwd packages/lesspass test
+
+  test-backend:
+    name: Zero-Knowledge Relay API (Django)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: 'pip'
+          cache-dependency-path: backend/requirements.txt
+
+      - name: Install Python dependencies
+        run: pip install -r backend/requirements.txt
+
+      - name: Run Django API tests
+        run: python backend/manage.py test api.tests.test_pairing

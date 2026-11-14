@@ -1,6 +1,11 @@
 from django.urls import include, path
 from rest_framework.routers import DefaultRouter
 from api import views
+from api.pairing import (
+    PairingSessionApproveView,
+    PairingSessionCreateView,
+    PairingSessionPollView,
+)
 from djoser import views as djoser_views
 
 router = DefaultRouter()
@@ -17,4 +22,15 @@ urlpatterns = [
     path("tokens/auth/", views.BackwardCompatibleTokenObtainPairView.as_view()),
     path("auth/", include("djoser.urls")),
     path("auth/", include("djoser.urls.jwt")),
+    path("pairing/sessions/", PairingSessionCreateView.as_view(), name="pairing-create"),
+    path(
+        "pairing/sessions/<uuid:session_id>/",
+        PairingSessionPollView.as_view(),
+        name="pairing-poll",
+    ),
+    path(
+        "pairing/sessions/<uuid:session_id>/approve/",
+        PairingSessionApproveView.as_view(),
+        name="pairing-approve",
+    ),
 ]
