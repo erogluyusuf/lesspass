@@ -72,3 +72,11 @@ export {
   generatePasswordFromToken,
   type WrappedTokenPayload,
 } from "./vault/token";
+
+export {
+  createPairingSession,
+  approvePairingRequest,
+  completePairingSession,
+  type PairingSession,
+  type PairingTransferPacket,
+} from "./vault/pairing";
