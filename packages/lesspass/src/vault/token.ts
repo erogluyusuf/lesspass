@@ -11,11 +11,12 @@ function bytesToHex(bytes: Uint8Array): string {
     .join("");
 }
 
-function hexToBytes(hex: string): Uint8Array {
+function hexToBytes(hex: string): Uint8Array<ArrayBuffer> {
   if (hex.length % 2 !== 0) {
     throw new Error("Invalid hex string length");
   }
-  const bytes = new Uint8Array(hex.length / 2);
+  const buffer = new ArrayBuffer(hex.length / 2);
+  const bytes = new Uint8Array(buffer);
   for (let i = 0; i < hex.length; i += 2) {
     bytes[i / 2] = parseInt(hex.substring(i, i + 2), 16);
   }
@@ -27,7 +28,7 @@ function hexToBytes(hex: string): Uint8Array {
  * Stored inside hardware-backed storage (Android Keystore / iOS Secure Enclave) behind biometrics.
  */
 export function generateMasterToken(byteLength = 32): string {
-  const randomBytes = new Uint8Array(byteLength);
+  const randomBytes = new Uint8Array(new ArrayBuffer(byteLength));
   globalThis.crypto.getRandomValues(randomBytes);
   return bytesToHex(randomBytes);
 }
@@ -49,10 +50,12 @@ export async function wrapMasterToken(
     ["encrypt"],
   );
 
-  const iv = new Uint8Array(12);
+  const iv = new Uint8Array(new ArrayBuffer(12));
   globalThis.crypto.getRandomValues(iv);
 
-  const encodedToken = new TextEncoder().encode(masterToken);
+  const encodedToken = new TextEncoder().encode(
+    masterToken,
+  ) as Uint8Array<ArrayBuffer>;
   const encryptedBuffer = await globalThis.crypto.subtle.encrypt(
     { name: "AES-GCM", iv },
     cryptoKey,
@@ -101,7 +104,9 @@ export function generatePasswordFromToken(
   masterToken: string,
 ): Promise<string> {
   if (!masterToken || masterToken.trim().length < 32) {
-    return Promise.reject(new Error("Master token is missing or insufficient entropy"));
+    return Promise.reject(
+      new Error("Master token is missing or insufficient entropy"),
+    );
   }
   return generatePassword(profile, masterToken);
 }
