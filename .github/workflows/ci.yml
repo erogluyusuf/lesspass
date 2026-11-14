@@ -47,3 +47,24 @@ jobs:
 
       - name: Run Django API tests
         run: python backend/manage.py test api.tests.test_pairing
+
+  test-mobile:
+    name: Mobile Biometric Vault (React Native)
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'yarn'
+
+      - name: Install dependencies
+        run: yarn install --immutable
+
+      - name: Build core and run mobile biometric tests
+        run: |
+          yarn --cwd packages/lesspass build
+          yarn --cwd packages/lesspass-mobile test
