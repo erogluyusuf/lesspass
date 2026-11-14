@@ -64,3 +64,11 @@ export const defaultPasswordProfile: PasswordProfile = {
   login: "",
   counter: 1,
 };
+
+export {
+  generateMasterToken,
+  wrapMasterToken,
+  unwrapMasterToken,
+  generatePasswordFromToken,
+  type WrappedTokenPayload,
+} from "./vault/token";
