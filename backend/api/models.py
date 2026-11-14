@@ -100,3 +100,17 @@ class EncryptedPasswordProfile(DateMixin):
 
     def __str__(self):
         return str(self.id)
+
+
+class PairingSession(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    requester_public_key = models.TextField()
+    sender_public_key = models.TextField(blank=True, default="")
+    wrapped_token_iv = models.CharField(max_length=64, blank=True, default="")
+    wrapped_token_ciphertext = models.TextField(blank=True, default="")
+    is_approved = models.BooleanField(default=False)
+    expires_at = models.DateTimeField()
+    created = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return str(self.id)
