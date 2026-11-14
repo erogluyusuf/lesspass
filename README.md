@@ -1,3 +1,17 @@
+# LessPass — Zero-Knowledge Passwordless Vault
+
+[![Zero-Knowledge Vault CI](https://github.com/erogluyusuf/lesspass/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/erogluyusuf/lesspass/actions/workflows/ci.yml)
+[![Release](https://img.shields.io/github/v/release/erogluyusuf/lesspass)](https://github.com/erogluyusuf/lesspass/releases/tag/v1.0.0)
+
+This repository extends LessPass's deterministic password engine with a **Zero-Knowledge Passwordless Vault** across Core Crypto, Backend Relay, and Mobile Hardware Security layers. See [`ARCHITECTURE.md`](./ARCHITECTURE.md) for the full technical design.
+
+### Key Architectural Additions
+* **Core Crypto Engine (`packages/lesspass/src/vault/`):** 256-bit cryptographically random `Master Token`, AES-256-GCM key wrapping, and ephemeral ECDH P-256 device-to-device QR pairing (56 unit tests).
+* **Zero-Knowledge Relay API (`backend/api/pairing.py`):** Stateless Django REST relay enforcing a 120s TTL, replay protection (`409 Conflict`), and atomic **burn-after-reading** deletion.
+* **Mobile Biometric Vault (`packages/lesspass-mobile/src/vault/`):** Hardware-sealed `Master Token` storage via Android KeyStore / iOS Secure Enclave (`SECURE_HARDWARE`, `BIOMETRY_ANY`) for biometric site password derivation and QR pairing approval (49 tests).
+
+---
+
 # LessPass
 
 LessPass is a stateless password manager.
