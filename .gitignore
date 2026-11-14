@@ -14,4 +14,4 @@ default.nix
 !.yarn/sdks
 !.yarn/versions
 dump.pgsql
-restore.sh
+restore.shbackend/.venv/
